@@ -635,20 +635,14 @@ class UserModel
         $query = DB::table('user')
             ->join('user_access', 'user_access.UserId', 'user.Id')
             ->join('role', 'user_access.RoleId', 'role.Id')
-            ->leftjoin('user_association', 'user_association.DestinationUserId', 'user.Id')
-            ->leftjoin('user as sourceUser', 'user_association.SourceUserId', 'sourceUser.Id')
-            ->leftjoin('user as destinationUser', 'user_association.DestinationUserId', 'destinationUser.Id')
-            ->select('user.*', 'role.Id as RoleId', 'role.Name as RoleName', 'role.CodeName as RoleCodeName', 'sourceUser.FirstName as SourceUserFirstName',
-                'sourceUser.LastName as SourceUserLastName', 'sourceUser.EmailAddress as SourceUserEmailAddress', 'user_association.AssociationType',
-                'destinationUser.FirstName as DestinationUserFirstName', 'destinationUser.LastName as DestinationUserLastName',
-                'destinationUser.EmailAddress as DestinationUserEmailAddress')
+            ->select('user.*', 'role.Id as RoleId', 'role.Name as RoleName', 'role.CodeName as RoleCodeName')
             ->where('user.Id', '=', $id)
             ->first();
 
         return $query;
     }
 
-    static public function GetPatientViaMobileNum($mobileNum,$patientRoleCode)
+    static public function GetPatientViaMobileNum($mobileNum, $patientRoleCode)
     {
         error_log('in GetUserViaMobileNum function - Model');
         error_log($mobileNum);

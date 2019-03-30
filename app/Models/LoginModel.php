@@ -36,7 +36,8 @@ class LoginModel
 
             // ('ID', 'FirstName', 'LastName','EmailAddress','MobileNumber','TelephoneNumber','Gender','FunctionalTitle','FunctionalTitle')
             $login = DB::table('user')
-                ->select('Id')
+//                ->select('Id')
+                ->select()
                 ->where('EmailAddress', '=', $email)
                 ->where('Password', '=', $hashedPassword)
                 ->where('IsActive', '=', 1)
@@ -44,40 +45,16 @@ class LoginModel
 
             $checkLogin = json_decode(json_encode($login), true);
 
-            //Checking user if it is blocked or not
-//            $checkUser = UserModel::GetSingleUserViaIdNewFunction($checkLogin[0]['Id']);
-//
-//            if ($checkUser != null || $checkUser != false) {
-//                error_log('user data fetched');
-//                error_log('$checkUser->IsBlock ' . $checkUser->IsBlock);
-//                if ($checkUser->IsBlock == true) {
-//                    return array("status" => "failed", "data" => null, "message" => "User is blocked");
-//                }
-//                error_log('$checkUser->IsActive ' . $checkUser->IsActive);
-//                if ($checkUser->IsActive == false) {
-//                    return array("status" => "failed", "data" => null, "message" => "User is not active");
-//                }
-//            }
-
             if (count($checkLogin) > 0) {
 
-                error_log("correct");
-                //Checking user if it is blocked or not
-                $checkUser = UserModel::GetSingleUserViaIdNewFunction($checkLogin[0]['Id']);
+                error_log("logged in ");
 
-                if ($checkUser != null || $checkUser != false) {
-                    error_log('user data fetched');
-                    error_log('$checkUser->IsBlock ' . $checkUser->IsBlock);
-                    if ($checkUser->IsBlock == true) {
-                        return array("status" => "failed", "data" => null, "message" => "User is blocked");
-                    }
-                    error_log('$checkUser->IsActive ' . $checkUser->IsActive);
-                    if ($checkUser->IsActive == false) {
-                        return array("status" => "failed", "data" => null, "message" => "User is not active");
-                    }
+                error_log('user data fetched');
+//                error_log($checkLogin);
+                error_log('$checkUser->IsBlock ' . $checkLogin[0]['IsBlock']);
+                if ($checkLogin[0]['IsBlock'] == true) {
+                    return array("status" => "failed", "data" => null, "message" => "User is blocked");
                 }
-                // $session = LoginModel::createLoginSession($request, $checkLogin);
-                // return redirect( $homeRedirect )->with($session);
 
                 $token = md5(uniqid(rand(), true));
                 // $token = LoginModel::generateAccessToken();
@@ -152,6 +129,7 @@ class LoginModel
         } catch (Exception $e) {
 
             error_log('in exception');
+            error_log($e);
 
             DB::rollBack();
             return array("status" => "error", "data" => null, 'message' => "Something went wrong");

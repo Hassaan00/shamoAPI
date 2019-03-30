@@ -21,48 +21,6 @@ use Exception;
 class LoginController extends Controller
 {
 
-    function login_old(Request $request)
-    {
-        // return LoginModel::getLogin($request);
-        // Log::info('hit login.');
-        $check = LoginModel::getLogin($request);
-
-        if ($check['status'] == true) {
-
-            // now generate token
-            // $token = HelperModel::generateAccessToken();
-            $token = LoginModel::generateAccessToken();
-            // return response()->json(['data' => $token, 'message' => 'token'], 200);
-            // $token = null;
-            // test
-            // Log::info('This is some useful information.');
-            // return response()->json(['data' => $check, 'message' => 'Successfully Login'], 200);
-            if ($token != null) {
-                $insertData = array("UserId" => $check['data']['ID'], "AccessToken" => $token);
-
-                $checkInsertToken = GenericModel::insertGenericAndReturnID("access_token", $insertData);
-
-                if ($checkInsertToken) {
-
-                    // return response()->json(['data' => $check['data'], 'message' => 'Successfully Login'], 200);
-                    return response()->json(['data' => ['User' => $check['data'], 'accessToken' => "a123"], 'message' => 'User Successfully Logged In'], 200);
-                } else {
-                    return response()->json(['data' => null, 'message' => 'Something went wrong'], 400);
-                }
-
-            } else {
-                return response()->json(['data' => null, 'message' => 'Something went wrong'], 400);
-            }
-
-
-            // return response()->json(['data' => $check['data'], 'message' => 'Successfully Login'], 200);
-        } else {
-            return response()->json(['data' => null, 'message' => 'Email or password is incorrect'], 400);
-        }
-
-        // return LoginModel::getLogin($request);
-    }
-
     function login(Request $request)
     {
 
