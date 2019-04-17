@@ -18,6 +18,77 @@ use Mail;
 class ServicesModel
 {
 
+    static public function getSubscriptionList($userId)
+    {
+
+        try {
+
+            // return DB::table("proposal_type")
+            $data = DB::table("proposal_type")
+                ->select('proposal_type.*')
+                ->leftJoin('user_subscription_detail', 'user_subscription_detail.ProposalTypeId', 'proposal_type.Id')
+                ->leftJoin('user_subscription', 'user_subscription.Id', 'user_subscription_detail.SubscriptionId')
+                ->leftJoin('user', 'user.Id', 'user_subscription.UserId')
+                ->where('proposal_type.IsActive', '=', true)
+                ->where('user_subscription_detail.IsActive', '=', true)
+                ->where('user_subscription.IsActive', '=', true)
+                ->where('user.IsActive', '=', true)
+                ->where('user.Id', '=', $userId)
+                ->orderBy("proposal_type.Id", 'ASC')
+                ->groupBy('proposal_type.Id')
+                ->get();
+
+            return array("status" => "success", "data" => $data);
+
+
+        } catch (Exception $e) {
+
+            echo "error";
+            return array("status" => "error", "data" => null);
+            //   return $e;
+        }
+    }
+
+    static public function checkSubscription($userId, $proposalTypeId)
+    {
+
+        try {
+
+            // return DB::table("proposal_type")
+            $data = DB::table("proposal_type")
+                ->select('proposal_type.*')
+                ->leftJoin('user_subscription_detail', 'user_subscription_detail.ProposalTypeId', 'proposal_type.Id')
+                ->leftJoin('user_subscription', 'user_subscription.Id', 'user_subscription_detail.SubscriptionId')
+                ->leftJoin('user', 'user.Id', 'user_subscription.UserId')
+                ->where('proposal_type.IsActive', '=', true)
+                ->where('user_subscription_detail.IsActive', '=', true)
+                ->where('user_subscription_detail.ProposalTypeId', '=', $proposalTypeId)
+                ->where('user_subscription.IsActive', '=', true)
+                ->where('user.IsActive', '=', true)
+                ->where('user.Id', '=', $userId)
+                ->orderBy("proposal_type.Id", 'ASC')
+                ->groupBy('proposal_type.Id')
+                ->get();
+
+            // return array("status" => "success", "data" => $data);
+            if(count($data) > 0){
+                return true;
+            }
+            else{
+                return false;
+            }
+
+            
+
+
+        } catch (Exception $e) {
+
+            // echo "error";
+            return false;
+            //   return $e;
+        }
+    }
+
     static public function sendInviteTrans(Request $request)
     {
         $phoneCode = getenv("PAK_NUM_CODE");//fetch from front-end
@@ -108,15 +179,15 @@ class ServicesModel
                 return array("status" => "failed", "data" => null);
             }
 
-//            if (count($checkInvite) > 0) {
-//
-//                DB::rollBack();
-//                return array("status" => "failed", "data" => null, "message" => "Invite is already sent to this Email address");
-//
-//            } else {
-//
-//
-//            }
+        //    if (count($checkInvite) > 0) {
+
+        //        DB::rollBack();
+        //        return array("status" => "failed", "data" => null, "message" => "Invite is already sent to this Email address");
+
+        //    } else {
+
+
+        //    }
 
         } catch (Exception $e) {
 

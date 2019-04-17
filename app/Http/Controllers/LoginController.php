@@ -161,20 +161,20 @@ class LoginController extends Controller
                             LoginModel::sendEmail($emailAddress, "Reset Password", $emailMessage, $url);
 
                             //Now sending sms
-                            if ($mobileNumber != null) {
-                                $url = env('WEB_URL') . '/#/';
-                                $toNumber = array();
-                                $phoneCode = getenv("PAK_NUM_CODE");//fetch from front-end
-                                $mobileNumber = $phoneCode . $mobileNumber;
-                                array_push($toNumber, $mobileNumber);
-                                try {
-//                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address', $url);
-                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address.', null);
-                                } catch (Exception $ex) {
-//                                    return response()->json(['data' => $insertedRecord, 'message' => 'User successfully registered. ' . $ex], 200);
-                                    return response()->json(['data' => $insertedRecord, 'message' => 'Verification link has been sent to your email address. '], 200);
-                                }
-                            }
+//                            if ($mobileNumber != null) {
+//                                $url = env('WEB_URL') . '/#/';
+//                                $toNumber = array();
+//                                $phoneCode = getenv("PAK_NUM_CODE");//fetch from front-end
+//                                $mobileNumber = $phoneCode . $mobileNumber;
+//                                array_push($toNumber, $mobileNumber);
+//                                try {
+////                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address', $url);
+//                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address.', null);
+//                                } catch (Exception $ex) {
+////                                    return response()->json(['data' => $insertedRecord, 'message' => 'User successfully registered. ' . $ex], 200);
+//                                    return response()->json(['data' => $insertedRecord, 'message' => 'Verification link has been sent to your email address. '], 200);
+//                                }
+//                            }
                             return response()->json(['data' => $insertedRecord, 'message' => 'Verification link has been sent to your email address.'], 200);
 
 
@@ -268,20 +268,20 @@ class LoginController extends Controller
                                 LoginModel::sendEmail($emailAddress, "Update Password", $emailMessage, "");
 
                                 //Now sending sms
-                                if ($mobileNumber != null) {
-                                    $url = env('WEB_URL') . '/#/';
-                                    $toNumber = array();
-                                    $phoneCode = getenv("PAK_NUM_CODE");//fetch from front-end
-                                    $mobileNumber = $phoneCode . $mobileNumber;
-                                    array_push($toNumber, $mobileNumber);
-                                    try {
-//                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address', $url);
-                                        HelperModel::sendSms($toNumber, 'Your password has been updated.', null);
-                                    } catch (Exception $ex) {
-//                                    return response()->json(['data' => $insertedRecord, 'message' => 'User successfully registered. ' . $ex], 200);
-                                        return response()->json(['data' => null, 'message' => 'Your password has been updated. '], 200);
-                                    }
-                                }
+//                                if ($mobileNumber != null) {
+//                                    $url = env('WEB_URL') . '/#/';
+//                                    $toNumber = array();
+//                                    $phoneCode = getenv("PAK_NUM_CODE");//fetch from front-end
+//                                    $mobileNumber = $phoneCode . $mobileNumber;
+//                                    array_push($toNumber, $mobileNumber);
+//                                    try {
+////                                    HelperModel::sendSms($toNumber, 'Verification link has been sent to your email address', $url);
+//                                        HelperModel::sendSms($toNumber, 'Your password has been updated.', null);
+//                                    } catch (Exception $ex) {
+////                                    return response()->json(['data' => $insertedRecord, 'message' => 'User successfully registered. ' . $ex], 200);
+//                                        return response()->json(['data' => null, 'message' => 'Your password has been updated. '], 200);
+//                                    }
+//                                }
                                 return response()->json(['data' => null, 'message' => 'Your password has been updated.'], 200);
 
                             } else {

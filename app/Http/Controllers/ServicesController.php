@@ -21,8 +21,124 @@ use Log;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use GuzzleHttp\Client;
+
 class ServicesController extends Controller
 {
+
+    //type list for combo box
+    function TypeList()
+    {
+        $val = GenericModel::simpleFetchGenericByWhere("proposal_type", "=", "IsActive", 1, "Id");
+
+        $resultArray = json_decode(json_encode($val), true);
+        $data = $resultArray;
+        if (count($data) > 0) {
+            return response()->json(['data' => $data, 'message' => 'Type fetched successfully'], 200);
+        } else {
+            return response()->json(['data' => null, 'message' => 'Types not found'], 200);
+        }
+    }
+
+    function TypeSubscriptionList(Request $request)
+    {
+        $userId = $request->input('userId');
+
+        $val = ServicesModel::getSubscriptionList($userId);
+
+        if($val["status"] == "success"){
+            $resultArray = json_decode(json_encode($val["data"]), true);
+            $data = $resultArray;
+
+            if (count($data) > 0) {
+                return response()->json(['data' => $data, 'message' => 'Type fetched successfully'], 200);
+            } else {
+                return response()->json(['data' => null, 'message' => 'Types not found'], 200);
+            }
+
+        }
+        else{
+            return response()->json(['data' => null, 'message' => 'Error Occur'], 500);
+
+        }
+        
+        
+    }
+
+    function offer(Request $request)
+    {
+        error_log("offer");
+
+        $apiKey = "24adb06e-787c-451c-8bd7-f8e02c09b919";
+        $appName = "usabuyersgroup";
+
+        $addr = $request->input('addr');
+        $citystatezip = $request->input('citystatezip');
+
+        if(empty($addr)){
+            $addr = "";
+        }
+        if(empty($citystatezip)){
+            $citystatezip = "";
+        }
+
+        try {
+
+            // $client = new \GuzzleHttp\Client(['base_uri' => 'https://foo.com/api/']);
+            // // Send a request to https://foo.com/api/test
+            // $response = $client->request('GET', 'test');
+            // // Send a request to https://foo.com/root
+            // $response = $client->request('GET', '/root');
+
+
+
+
+            // $data = $request->input('name');
+            $client = new Client();
+            $res = $client->request('Get', 'https://api.eppraisal.com/avm.json', [
+                'query' => [
+                    'apikey' => $apiKey,
+                    'appname' => $appName,
+                    'addr' => $addr,
+                    'citystatezip' => $citystatezip,
+                ]
+            ]);
+            error_log($res->getStatusCode());
+            // echo $res->getStatusCode();
+            // 200
+            // error_log($res->getHeader('content-type'));
+            // echo $res->getHeader('content-type');
+            // 'application/json; charset=utf8'
+            // error_log($res->getBody());
+            // echo $res->getBody();
+
+            // $res = $client->request('POST', 'http://www.exmple.com/mydetails', [
+            //     'form_params' => [
+            //         'name' => 'george',
+            //     ]
+            // ]);
+        
+            if ($res->getStatusCode() == 200) { // 200 OK
+                $response_data = $res->getBody()->getContents();
+
+                $data = json_decode($response_data, true);
+                // return response()->json(['data' => $response_data, 'message' => 'success'], 200);
+                return response()->json(['data' => $data, 'message' => 'success'], 200);
+            }
+            else{
+                return response()->json(['data' => $response_data, 'message' => 'error occur'], $res->getStatusCode());
+
+            }
+
+            
+
+        } catch (Exception $e) {
+            error_log("error ".$e);
+
+            return response()->json(['data' => null, 'message' => 'error occur'], 500);
+        }
+
+    }
 
     function invite(Request $request)
     {

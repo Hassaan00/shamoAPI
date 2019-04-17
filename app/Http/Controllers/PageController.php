@@ -725,17 +725,17 @@ class PageController extends BaseController
     public function sendTwilioSmsReminders()
     {
 
-        foreach( $subscribers as $subscriber) {
-            $this->twilioClient->messages->create(
-            // Where to send a text message
-                $subscriber[0],
-                array(
-                    "from" => $myTwilioNumber,
-                    "body" => "Hey! ". $subscriber[1] . ", the ".$subscriber[2] ." Tech event begins in 2 days!"
-                )
-            );
-        }
-        return "Successfully sent ". count($subscribers) . " reminder(s)";
+//        foreach( $subscribers as $subscriber) {
+//            $this->twilioClient->messages->create(
+//            // Where to send a text message
+//                $subscriber[0],
+//                array(
+//                    "from" => $myTwilioNumber,
+//                    "body" => "Hey! ". $subscriber[1] . ", the ".$subscriber[2] ." Tech event begins in 2 days!"
+//                )
+//            );
+//        }
+//        return "Successfully sent ". count($subscribers) . " reminder(s)";
     }
 
     //Permission list via pagination

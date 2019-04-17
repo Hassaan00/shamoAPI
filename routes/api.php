@@ -26,17 +26,19 @@ Route::get('/role/count', 'PageController@RoleCount');
 
 
 //user list with pagination
-Route::get('/user/list/search', 'UserController@UserListViaPagination');
+Route::get('/user/list', 'UserController@UserListViaPagination');
 //user list without pagination
-Route::get('/user/list', 'UserController@UserList');
+Route::get('/user/list/not/useable', 'UserController@UserList');
 //user list count
-Route::get('/user/count', 'UserController@UserCount');
+Route::get('/user/list/count', 'UserController@UserCount');
 //User update route
-Route::post('/user/update', 'UserController@UserUpdate');
+Route::post('/user/update/basic', 'UserController@UserUpdateBasic');
 //Get single user via id
 Route::get('/user/single', 'UserController@GetSingleUserViaId');
 //User registration
 Route::post('/user/add', 'UserController@UserRegistration');
+//User registration
+Route::post('/user/update/full/information', 'UserController@UpdateUserFullInformation');
 //User delete route
 Route::post('/user/delete', 'UserController@UserDelete');
 //User invitation list with pagination and search
@@ -50,6 +52,10 @@ Route::post('/user/unblock', 'UserController@UserUnblock');
 
 //get support staff list
 Route::get('/user/via/role', 'UserController@GetUserViaRoleCode');
+
+//User Change Password
+Route::put('/user/change/password', 'UserController@UserChangePassword');
+
 
 //Associate doctor to facilitator route
 Route::post('/associate/doctor/facilitator', 'UserController@AssociateFacilitatorsWithDoctor');
@@ -74,7 +80,6 @@ Route::post('/upload/file', 'DocumentUploadController@UploadFiles');
 Route::get('/doctor/facilitator', 'UserController@GetAssociateFacilitator');
 
 
-
 Route::get('/', function () {
     return 'Hello';
 });
@@ -93,6 +98,54 @@ Route::post('/login', 'LoginController@login');
 Route::post('/register', 'LoginController@register');
 Route::post('/forgetPass', 'LoginController@forgetPass');
 Route::post('/resetPass', 'LoginController@resetPass');
+
+
+//template list without pagination
+Route::get('/template/list', 'TemplateController@TemplateList');
+
+//template list without pagination
+Route::get('/template/list/via/type', 'TemplateController@TemplateListViaType');
+
+//template list count
+Route::get('/template/list/count', 'TemplateController@TemplateCount');
+
+//template list with pagination
+Route::get('/template/list/search', 'TemplateController@TemplateListViaPagination');
+
+//Get single template via id
+Route::get('/template/single', 'TemplateController@GetSingleTemplateViaId');
+//template add
+Route::post('/template/add', 'TemplateController@TemplateAdd');
+//template updata
+Route::post('/template/update', 'TemplateController@TemplateUpdate');
+
+//template delete
+//Route::post('/template/update', 'TemplateController@TemplateDelete');  work not done
+
+
+//proposal list without pagination
+Route::get('/proposal/list', 'ProposalController@ProposalList');
+
+//proposal list count
+Route::get('/proposal/list/count', 'ProposalController@ProposalCount');
+
+//proposal list with pagination
+Route::get('/proposal/list/search', 'ProposalController@ProposalListViaPagination');
+
+//Get single proposal via id
+Route::get('/proposal/single', 'ProposalController@GetSingleProposalViaId');
+//proposal add
+Route::post('/proposal/add', 'ProposalController@ProposalAdd');
+//proposal updata
+Route::post('/proposal/update', 'ProposalController@ProposalUpdate');
+
+//proposal delete
+//Route::post('/template/update', 'TemplateController@TemplateDelete');  work not done
+
+Route::get('/offer', 'ServicesController@offer');
+//proposal type list
+Route::get('/type/list', 'ServicesController@TypeList');
+Route::get('/type/subscription/list', 'ServicesController@TypeSubscriptionList');
 
 
 //$time = strtotime($dateInUTC.' UTC');

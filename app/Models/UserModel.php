@@ -380,6 +380,75 @@ class UserModel
         }
     }
 
+    static public function UserListViaPagination
+    ($tableName, $offset, $limit, $orderBy, $keyword)
+    {
+        error_log('In model');
+        if ($keyword == "null") {
+            error_log('keyword is null');
+
+            $query = DB::table('user')
+                ->join('user_access', 'user_access.UserId', 'user.Id')
+                ->join('role', 'user_access.RoleId', 'role.Id')
+                ->select('user.*')
+                ->where('user.IsActive', '=', true)
+                ->where('role.CodeName', '=', "system_administrator")
+                ->skip($offset * $limit)
+                ->take($limit)
+                ->orderBy($tableName . '.' . $orderBy, 'DESC')
+                ->get();
+        } else {
+            error_log('keyword is NOT null');
+
+            $query = DB::table('user')
+                ->join('user_access', 'user_access.UserId', 'user.Id')
+                ->join('role', 'user_access.RoleId', 'role.Id')
+                ->select('user.*')
+                ->where('user.IsActive', '=', true)
+                ->where('role.CodeName', '=', "system_administrator")
+                ->where($tableName . '.FirstName', 'like', '%' . $keyword . '%')
+                ->orWhere($tableName . '.LastName', 'like', '%' . $keyword . '%')
+                ->orWhere($tableName . '.EmailAddress', 'like', '%' . $keyword . '%')
+                ->skip($offset * $limit)
+                ->take($limit)
+                ->orderBy($tableName . '.' . $orderBy, 'DESC')
+                ->get();
+        }
+
+        return $query;
+
+    }
+
+    static public function UserListCount($keyword)
+    {
+        error_log('In model');
+        if ($keyword == "null") {
+            error_log('keyword is null');
+
+            $query = DB::table('user')
+                ->join('user_access', 'user_access.UserId', 'user.Id')
+                ->join('role', 'user_access.RoleId', 'role.Id')
+                ->where('user.IsActive', '=', true)
+                ->where('role.CodeName', '=', "system_administrator")
+                ->count();
+        } else {
+            error_log('keyword is NOT null');
+
+            $query = DB::table('user')
+                ->join('user_access', 'user_access.UserId', 'user.Id')
+                ->join('role', 'user_access.RoleId', 'role.Id')
+                ->where('user.IsActive', '=', true)
+                ->where('role.CodeName', '=', "system_administrator")
+                ->where('user.FirstName', 'like', '%' . $keyword . '%')
+                ->orWhere('user.LastName', 'like', '%' . $keyword . '%')
+                ->orWhere('user.EmailAddress', 'like', '%' . $keyword . '%')
+                ->count();
+        }
+
+        return $query;
+
+    }
+
     static public function FetchUserWithSearchAndPagination
     ($tableName, $operator, $columnName, $data, $offset, $limit, $orderBy, $keyword, $roleCode)
     {
@@ -610,18 +679,12 @@ class UserModel
         $query = DB::table('user')
             ->join('user_access', 'user_access.UserId', 'user.Id')
             ->join('role', 'user_access.RoleId', 'role.Id')
-            ->leftjoin('user_association', 'user_association.DestinationUserId', 'user.Id')
-            ->leftjoin('user as sourceUser', 'user_association.SourceUserId', 'sourceUser.Id')
-            ->leftjoin('user as destinationUser', 'user_association.DestinationUserId', 'destinationUser.Id')
-            ->select('user.*', 'role.Id as RoleId', 'role.Name as RoleName', 'role.CodeName as RoleCodeName', 'sourceUser.FirstName as SourceUserFirstName',
-                'sourceUser.LastName as SourceUserLastName', 'sourceUser.EmailAddress as SourceUserEmailAddress', 'user_association.AssociationType',
-                'destinationUser.FirstName as DestinationUserFirstName', 'destinationUser.LastName as DestinationUserLastName',
-                'destinationUser.EmailAddress as DestinationUserEmailAddress')
+            ->select('user.*', 'role.Id as RoleId', 'role.Name as RoleName', 'role.CodeName as RoleCodeName')
             ->where('user.Id', '=', $id)
             ->where('user.IsActive', '=', true)
             ->get();
 
-        error_log($query);
+        // error_log($query);
 
         return $query;
     }
@@ -667,6 +730,28 @@ class UserModel
             ->where('EmailAddress', '=', $userEmail)
             ->where('IsActive', '=', 1)
             ->get();
+
+        return $isDuplicate;
+    }
+
+    static public function GetSubscriptionDetails($userId)
+    {
+        $isDuplicate = DB::table('user_subscription_detail')
+            ->select('*')
+            ->where('UserId', '=', $userId)
+            ->where('IsActive', '=', 1)
+            ->get();
+
+        return $isDuplicate;
+    }
+
+    static public function GetSubscriptionRecord($userId)
+    {
+        $isDuplicate = DB::table('user_subscription')
+            ->select('*')
+            ->where('UserId', '=', $userId)
+            ->where('IsActive', '=', 1)
+            ->first();
 
         return $isDuplicate;
     }
@@ -781,6 +866,7 @@ class UserModel
 
     static public function getRoleViaRoleCode($roleCodeName)
     {
+        error_log('$roleCodeName : ' . $roleCodeName);
         return DB::table('role')
             ->select('role.*')
             ->where('CodeName', '=', $roleCodeName)
